@@ -1,19 +1,19 @@
 {
-  "name": "n8n-nodes-<...>",
-  "version": "0.1.0",
-  "description": "",
+  "name": "n8n-nodes-yandexgpt",
+  "version": "0.0.0",
+  "description": "Yandex GPT nodes for n8n",
   "keywords": [
     "n8n-community-node-package"
   ],
   "license": "MIT",
-  "homepage": "",
+  "homepage": "https://github.com/olegtsvetkov/n8n-nodes-yandexgpt",
   "author": {
-    "name": "",
-    "email": ""
+    "name": "Oleg Tsvetkov",
+    "email": "me@olegtsvetkov.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/<...>/n8n-nodes-<...>.git"
+    "url": "https://github.com/olegtsvetkov/n8n-nodes-yandexgpt.git"
   },
   "engines": {
     "node": ">=18.10",
