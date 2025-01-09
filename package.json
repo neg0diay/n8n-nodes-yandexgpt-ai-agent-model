@@ -36,8 +36,10 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
+      "dist/credentials/YandexGptApi.credentials.js"
     ],
     "nodes": [
+      "dist/nodes/YandexGpt/LmYandexGpt.node.js"
     ]
   },
   "devDependencies": {
@@ -51,5 +53,9 @@
   },
   "peerDependencies": {
     "n8n-workflow": "*"
+  },
+  "dependencies": {
+    "@langchain/core": "^0.3.27",
+    "@langchain/yandex": "^0.1.0"
   }
 }
