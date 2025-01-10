@@ -1,5 +1,8 @@
-import { ChatYandexGPT } from '@langchain/yandex';
+import { ChatYandexGPT, YandexGPTInputs } from '@langchain/yandex';
 import {
+	ILoadOptionsFunctions,
+	INodeListSearchItems,
+	INodeListSearchResult,
 	NodeConnectionType,
 	type IExecuteFunctions,
 	type INodeType,
@@ -46,10 +49,37 @@ export class LmYandexGpt implements INodeType {
 		properties: [
 			{
 				displayName: 'Model',
-				type: 'string',
 				name: 'model',
-				hint: 'The model which will generate the completion. Available options can be found in <a href="https://yandex.cloud/ru/docs/foundation-models/concepts/yandexgpt/models" target="_blank">Yandex Foundation Models</a> documentation.',
+				description: 'The model which will generate the completion. Available options can be found in <a href="https://yandex.cloud/ru/docs/foundation-models/concepts/yandexgpt/models" target="_blank">Yandex Foundation Models</a> documentation.',
+				type: 'resourceLocator',
 				default: '',
+				modes: [
+					{
+						displayName: 'URI',
+						name: 'uri',
+						type: 'string',
+						hint: 'Enter a URI',
+						validation: [
+							{
+								type: 'regex',
+								properties: {
+									regex: '^(gpt|ds):\/\/(.+)\/(.+)',
+									errorMessage: 'Invalid URI',
+								},
+							},
+						],
+						placeholder: 'gpt://<folder_id>/yandexgpt-lite/latest',
+					},
+					{
+						displayName: 'List',
+						name: 'list',
+						type: 'list',
+						typeOptions: {
+							searchListMethod: 'listYandexGptModels',
+							searchable: true,
+						},
+					},
+				],
 			},
 			{
 				displayName: 'Options',
@@ -83,14 +113,61 @@ export class LmYandexGpt implements INodeType {
 		],
 	};
 
+	methods = {
+		listSearch: {
+			async listYandexGptModels(this: ILoadOptionsFunctions): Promise<INodeListSearchResult> {
+				const models = [
+					{
+						'model': 'yandexgpt-lite',
+						'segments': ['latest', 'rc', 'deprecated'],
+					},
+					{
+						'model': 'yandexgpt',
+						'segments': ['latest', 'rc', 'deprecated'],
+					},
+					{
+						'model': 'yandexgpt-32k',
+						'segments': ['latest', 'rc'],
+					},
+					{
+						'model': 'llama-lite',
+						'segments': ['latest'],
+					},
+					{
+						'model': 'llama',
+						'segments': ['latest'],
+					},
+				];
+
+				const results: INodeListSearchItems[] = models.flatMap(({ model, segments }) =>
+					segments.map(segment => ({ name: `${model}/${segment}`, value: `${model}/${segment}` }))
+				);
+
+				return { results };
+			},
+		},
+	};
+
 	async supplyData(this: IExecuteFunctions, itemIndex: number): Promise<SupplyData> {
 		const credentials = await this.getCredentials('yandexGptApi');
 
-		const modelUri = this.getNodeParameter('model', itemIndex) as string;
+		const modelUriInput = this.getNodeParameter('model', itemIndex, '', {
+			extractValue: true,
+		}) as string;
+
+		var modelUri: string;
+
+		if (modelUriInput.match('^(gpt|ds):\/\/')) {
+			// todo: check folderId
+			modelUri = modelUriInput;
+		} else {
+			modelUri = `gpt://${credentials.folderId}/${modelUriInput}`;
+		}
+
 		const options = this.getNodeParameter('options', itemIndex, {}) as {
 			maxTokens?: number;
 			temperature?: number;
-		};
+		} as YandexGPTInputs;
 
 		const model = new ChatYandexGPT({
 			apiKey: credentials.apiKey as string,
