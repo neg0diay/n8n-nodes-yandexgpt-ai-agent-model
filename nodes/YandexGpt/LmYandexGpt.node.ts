@@ -50,7 +50,8 @@ export class LmYandexGpt implements INodeType {
 			{
 				displayName: 'Model',
 				name: 'model',
-				description: 'The model which will generate the completion. Available options can be found in <a href="https://yandex.cloud/ru/docs/foundation-models/concepts/yandexgpt/models" target="_blank">Yandex Foundation Models</a> documentation.',
+				description: 'The model which will generate the completion',
+				hint: 'Provide model URI or select from the list. Available models can be found in <a href="https://yandex.cloud/ru/docs/foundation-models/concepts/yandexgpt/models" target="_blank">Yandex Foundation Models</a> documentation.',
 				type: 'resourceLocator',
 				default: '',
 				modes: [
@@ -58,7 +59,6 @@ export class LmYandexGpt implements INodeType {
 						displayName: 'URI',
 						name: 'uri',
 						type: 'string',
-						hint: 'Enter a URI',
 						validation: [
 							{
 								type: 'regex',
