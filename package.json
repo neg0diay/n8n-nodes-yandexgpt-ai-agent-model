@@ -39,7 +39,7 @@
       "dist/credentials/YandexGptApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/YandexGpt/LmYandexGpt.node.js"
+      "dist/nodes/LmYandexGpt/LmYandexGpt.node.js"
     ]
   },
   "devDependencies": {
