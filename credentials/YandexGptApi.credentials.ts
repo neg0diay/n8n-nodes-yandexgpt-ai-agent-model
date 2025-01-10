@@ -1,5 +1,6 @@
 import {
 	IAuthenticateGeneric,
+	Icon,
 	ICredentialType,
 	INodeProperties,
 } from 'n8n-workflow';
@@ -7,6 +8,7 @@ import {
 export class YandexGptApi implements ICredentialType {
 	name = 'yandexGptApi';
 	displayName = 'Yandex GPT API';
+	icon: Icon = 'file:YandexGptApi.svg';
 	documentationUrl = 'https://yandex.cloud/ru/docs/foundation-models/api-ref/authentication';
 	properties: INodeProperties[] = [
 		{

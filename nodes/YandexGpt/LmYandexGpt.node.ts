@@ -14,7 +14,7 @@ export class LmYandexGpt implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Yandex GPT Model',
 		name: 'lmYandexGpt',
-		// icon: 'file:icons/YandexGpt.svg', // Укажи путь к иконке.
+		icon: 'file:LmYandexGpt.svg',
 		group: ['transform'],
 		version: 1,
 		description: 'Yandex GPT language model',
