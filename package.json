@@ -3,7 +3,9 @@
 	"version": "0.0.1",
 	"description": "Yandex GPT nodes for n8n (ai agent model)",
 	"keywords": [
-		"n8n-community-node-package, n8n-nodes-yandexgpt-ai-agent-model, yandex, yandexgpt"
+		"n8n-community-node-package",
+		"n8n-nodes-yandexgpt-ai-agent-model",
+		"yandexgpt"
 	],
 	"license": "MIT",
 	"homepage": "https://github.com/neg0diay/n8n-nodes-yandexgpt-ai-agent-model",
