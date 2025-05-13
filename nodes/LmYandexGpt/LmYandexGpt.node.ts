@@ -4,7 +4,8 @@ import {
 	INodeListSearchItems,
 	INodeListSearchResult,
 	NodeConnectionType,
-	type IExecuteFunctions,
+	ISupplyDataFunctions,
+	// type IExecuteFunctions,
 	type INodeType,
 	type INodeTypeDescription,
 	type SupplyData,
@@ -36,7 +37,7 @@ export class LmYandexGpt implements INodeType {
 			},
 		},
 		// eslint-disable-next-line n8n-nodes-base/node-class-description-inputs-wrong-regular-node
-		inputs: [],
+		inputs: [NodeConnectionType.Main],
 		// eslint-disable-next-line n8n-nodes-base/node-class-description-outputs-wrong
 		outputs: [NodeConnectionType.AiLanguageModel],
 		outputNames: ['Model'],
@@ -63,7 +64,7 @@ export class LmYandexGpt implements INodeType {
 							{
 								type: 'regex',
 								properties: {
-									regex: '^(gpt|ds):\/\/(.+)\/(.+)',
+									regex: '^(gpt|ds)://(.+)/(.+)',
 									errorMessage: 'Invalid URI',
 								},
 							},
@@ -98,7 +99,8 @@ export class LmYandexGpt implements INodeType {
 							maxValue: 1,
 							numberPrecision: 2,
 						},
-						description: 'Amount of randomness injected into the response. Ranges from 0 to 1 (0 is not included). Use temp closer to 0 for analytical / multiple choice, and temp closer to 1 for creative and generative tasks',
+						description:
+							'Amount of randomness injected into the response. Ranges from 0 to 1 (0 is not included). Use temp closer to 0 for analytical / multiple choice, and temp closer to 1 for creative and generative tasks',
 						type: 'number',
 					},
 					{
@@ -106,10 +108,11 @@ export class LmYandexGpt implements INodeType {
 						name: 'maxTokens',
 						type: 'number',
 						default: 2000,
-						description: 'The limit on the number of tokens used for single completion generation. Must be greater than zero. This maximum allowed parameter value may depend on the model being used.',
+						description:
+							'The limit on the number of tokens used for single completion generation. Must be greater than zero. This maximum allowed parameter value may depend on the model being used.',
 					},
 				],
-			}
+			},
 		],
 	};
 
@@ -118,29 +121,32 @@ export class LmYandexGpt implements INodeType {
 			async listYandexGptModels(this: ILoadOptionsFunctions): Promise<INodeListSearchResult> {
 				const models = [
 					{
-						'model': 'yandexgpt-lite',
-						'segments': ['latest', 'rc', 'deprecated'],
+						model: 'yandexgpt-lite',
+						segments: ['latest', 'rc', 'deprecated'],
 					},
 					{
-						'model': 'yandexgpt',
-						'segments': ['latest', 'rc', 'deprecated'],
+						model: 'yandexgpt',
+						segments: ['latest', 'rc', 'deprecated'],
 					},
 					{
-						'model': 'yandexgpt-32k',
-						'segments': ['latest', 'rc'],
+						model: 'yandexgpt-32k',
+						segments: ['latest', 'rc'],
 					},
 					{
-						'model': 'llama-lite',
-						'segments': ['latest'],
+						model: 'llama-lite',
+						segments: ['latest'],
 					},
 					{
-						'model': 'llama',
-						'segments': ['latest'],
+						model: 'llama',
+						segments: ['latest'],
 					},
 				];
 
 				const results: INodeListSearchItems[] = models.flatMap(({ model, segments }) =>
-					segments.map(segment => ({ name: `${model}/${segment}`, value: `${model}/${segment}` }))
+					segments.map((segment) => ({
+						name: `${model}/${segment}`,
+						value: `${model}/${segment}`,
+					})),
 				);
 
 				return { results };
@@ -148,7 +154,7 @@ export class LmYandexGpt implements INodeType {
 		},
 	};
 
-	async supplyData(this: IExecuteFunctions, itemIndex: number): Promise<SupplyData> {
+	async supplyData(this: ISupplyDataFunctions, itemIndex: number): Promise<SupplyData> {
 		const credentials = await this.getCredentials('yandexGptApi');
 
 		const modelUriInput = this.getNodeParameter('model', itemIndex, '', {
@@ -157,7 +163,7 @@ export class LmYandexGpt implements INodeType {
 
 		var modelUri: string;
 
-		if (modelUriInput.match('^(gpt|ds):\/\/')) {
+		if (modelUriInput.match('^(gpt|ds)://')) {
 			// todo: check folderId
 			modelUri = modelUriInput;
 		} else {
@@ -172,7 +178,7 @@ export class LmYandexGpt implements INodeType {
 		const model = new ChatYandexGPT({
 			apiKey: credentials.apiKey as string,
 			modelURI: modelUri,
-			...options
+			...options,
 		});
 
 		return {
