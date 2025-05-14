@@ -11,6 +11,11 @@ import {
 	type SupplyData,
 } from 'n8n-workflow';
 
+// import {
+//   AI_MODULES,
+// } from 'n8n-workflow/ai';
+//
+// @AI_MODULES.registerModule()
 export class LmYandexGpt implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Yandex GPT Model',
@@ -39,7 +44,8 @@ export class LmYandexGpt implements INodeType {
 		// eslint-disable-next-line n8n-nodes-base/node-class-description-inputs-wrong-regular-node
 		inputs: [NodeConnectionType.Main],
 		// eslint-disable-next-line n8n-nodes-base/node-class-description-outputs-wrong
-		outputs: [NodeConnectionType.AiLanguageModel],
+		// outputs: [NodeConnectionType.AiLanguageModel],
+		outputs: [NodeConnectionType.AiChain],
 		outputNames: ['Model'],
 		credentials: [
 			{
@@ -181,8 +187,20 @@ export class LmYandexGpt implements INodeType {
 			...options,
 		});
 
-		return {
-			response: model,
+		// form deepseek
+
+		const wrappedModel = {
+			invoke: async (input: any) => {
+				return model.invoke(input);
+			},
+			// Для поддержки стриминга
+			stream: model.stream ? async (input: any) => model.stream(input) : undefined,
 		};
+
+		return {
+			response: wrappedModel,
+		};
+
+		// form deepseek
 	}
 }
