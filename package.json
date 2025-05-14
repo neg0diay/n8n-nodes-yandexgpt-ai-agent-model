@@ -17,11 +17,16 @@
 		"type": "git",
 		"url": "https://github.com/neg0diay/n8n-nodes-yandexgpt-ai-agent-model"
 	},
-	"engines": {
-		"node": ">=18.10",
-		"pnpm": ">=9.1"
+	"engines_": {
+		"node_": ">=18.10",
+		"pnpm_": ">=9.1"
 	},
-	"packageManager": "pnpm@9.1.4",
+	"engines": {
+		"node": ">=20.15",
+		"pnpm": ">=10.2.1"
+	},
+	"packageManager_": "pnpm@9.1.4",
+	"packageManager": "pnpm@10.2.1",
 	"main": "index.js",
 	"scripts": {
 		"preinstall": "npx only-allow pnpm",
