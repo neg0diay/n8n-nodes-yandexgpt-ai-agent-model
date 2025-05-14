@@ -11,7 +11,7 @@ import {
 	type INodeType,
 	type INodeTypeDescription,
 	type SupplyData,
-	INodeExecutionData,
+	// INodeExecutionData,
 } from 'n8n-workflow';
 
 // import { AI_MODULES } from 'n8n-workflow/ai';

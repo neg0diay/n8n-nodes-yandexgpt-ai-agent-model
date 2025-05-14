@@ -79,9 +79,10 @@ export class LmChatYandexGpt implements INodeType {
 			// 	},
 			// },
 			{
-				displayName: 'Model_4',
+				displayName: 'Model',
 				name: 'model',
 				type: 'options',
+				// type: 'resourceLocator',
 				description: 'The model which will generate the completion.',
 				// typeOptions: {
 				// 	loadOptions: {
