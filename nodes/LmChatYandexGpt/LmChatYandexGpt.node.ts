@@ -64,10 +64,10 @@ export class LmChatYandexGpt implements INodeType {
 			{
 				displayName: 'Model',
 				name: 'model',
-				type: 'options',
+				// type: 'options',
 				// eslint-disable-next-line n8n-nodes-base/node-param-description-excess-final-period
-				// type: 'resourceLocator',
-				description: 'The model which will generate the completion',
+				type: 'resourceLocator',
+				description: 'The model which will generate the completion. 6.',
 				default: '',
 				modes: [
 					{
