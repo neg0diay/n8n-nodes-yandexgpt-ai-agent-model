@@ -6,7 +6,7 @@ import {
 	NodeConnectionType,
 	ISupplyDataFunctions,
 	// NodeOutput,
-	type IExecuteFunctions,
+	// type IExecuteFunctions,
 	// type NodeOutput,
 	type INodeType,
 	type INodeTypeDescription,
@@ -123,14 +123,14 @@ export class LmYandexGpt implements INodeType {
 					},
 				],
 			},
-			{
-				displayName: 'Input Text',
-				name: 'inputText',
-				type: 'string',
-				required: true,
-				default: '',
-				description: 'The input text/prompt for the model',
-			},
+			// {
+			// 	displayName: 'Input Text',
+			// 	name: 'inputText',
+			// 	type: 'string',
+			// 	required: true,
+			// 	default: '',
+			// 	description: 'The input text/prompt for the model',
+			// },
 		],
 	};
 
@@ -265,52 +265,52 @@ export class LmYandexGpt implements INodeType {
 	// 	return this.prepareOutputData(returnData);
 	// }
 
-	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
-		const items = this.getInputData();
-		const returnData: INodeExecutionData[] = [];
-
-		const credentials = await this.getCredentials('yandexGptApi');
-
-		for (let i = 0; i < items.length; i++) {
-			try {
-				const inputText = this.getNodeParameter('inputText', i) as string;
-				const modelName = this.getNodeParameter('model', i) as string;
-				const temperature = this.getNodeParameter('temperature', i) as number;
-				const maxTokens = this.getNodeParameter('maxTokens', i) as number;
-
-				const model = new ChatYandexGPT({
-					folderID: credentials.folderId as string,
-					iamToken: credentials.iamToken as string,
-					model: modelName,
-					temperature,
-					maxTokens,
-				});
-
-				const response = await model.invoke(inputText);
-
-				returnData.push({
-					json: {
-						result: response,
-						input: inputText,
-						model: modelName,
-						timestamp: new Date().toISOString(),
-					},
-				});
-			} catch (error) {
-				if (this.continueOnFail()) {
-					returnData.push({
-						json: {
-							error: error.message,
-							input: this.getNodeParameter('inputText', i) as string,
-							timestamp: new Date().toISOString(),
-						},
-					});
-					continue;
-				}
-				throw error;
-			}
-		}
-
-		return this.prepareOutputData(returnData);
-	}
+	// async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+	// 	const items = this.getInputData();
+	// 	const returnData: INodeExecutionData[] = [];
+	//
+	// 	const credentials = await this.getCredentials('yandexGptApi');
+	//
+	// 	for (let i = 0; i < items.length; i++) {
+	// 		try {
+	// 			const inputText = this.getNodeParameter('inputText', i) as string;
+	// 			const modelName = this.getNodeParameter('model', i) as string;
+	// 			const temperature = this.getNodeParameter('temperature', i) as number;
+	// 			const maxTokens = this.getNodeParameter('maxTokens', i) as number;
+	//
+	// 			const model = new ChatYandexGPT({
+	// 				folderID: credentials.folderId as string,
+	// 				iamToken: credentials.iamToken as string,
+	// 				model: modelName,
+	// 				temperature,
+	// 				maxTokens,
+	// 			});
+	//
+	// 			const response = await model.invoke(inputText);
+	//
+	// 			returnData.push({
+	// 				json: {
+	// 					result: response,
+	// 					input: inputText,
+	// 					model: modelName,
+	// 					timestamp: new Date().toISOString(),
+	// 				},
+	// 			});
+	// 		} catch (error) {
+	// 			if (this.continueOnFail()) {
+	// 				returnData.push({
+	// 					json: {
+	// 						error: error.message,
+	// 						input: this.getNodeParameter('inputText', i) as string,
+	// 						timestamp: new Date().toISOString(),
+	// 					},
+	// 				});
+	// 				continue;
+	// 			}
+	// 			throw error;
+	// 		}
+	// 	}
+	//
+	// 	return this.prepareOutputData(returnData);
+	// }
 }
