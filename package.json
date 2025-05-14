@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-yandexgpt-ai-agent-model",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "Yandex GPT nodes for n8n (ai agent model)",
 	"keywords": [
 		"n8n-community-node-package",
