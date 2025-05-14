@@ -5,10 +5,13 @@ import {
 	INodeListSearchResult,
 	NodeConnectionType,
 	ISupplyDataFunctions,
-	// type IExecuteFunctions,
+	// NodeOutput,
+	type IExecuteFunctions,
+	// type NodeOutput,
 	type INodeType,
 	type INodeTypeDescription,
 	type SupplyData,
+	INodeExecutionData,
 } from 'n8n-workflow';
 
 // import { AI_MODULES } from 'n8n-workflow/ai';
@@ -40,7 +43,7 @@ export class LmYandexGpt implements INodeType {
 			},
 		},
 		// eslint-disable-next-line n8n-nodes-base/node-class-description-inputs-wrong-regular-node
-		inputs: [NodeConnectionType.Main],
+		inputs: [],
 		// inputs: [],
 		// eslint-disable-next-line n8n-nodes-base/node-class-description-outputs-wrong
 		outputs: [NodeConnectionType.AiLanguageModel],
@@ -119,6 +122,14 @@ export class LmYandexGpt implements INodeType {
 							'The limit on the number of tokens used for single completion generation. Must be greater than zero. This maximum allowed parameter value may depend on the model being used.',
 					},
 				],
+			},
+			{
+				displayName: 'Input Text',
+				name: 'inputText',
+				type: 'string',
+				required: true,
+				default: '',
+				description: 'The input text/prompt for the model',
 			},
 		],
 	};
@@ -207,5 +218,99 @@ export class LmYandexGpt implements INodeType {
 		// return {
 		// 	response: model,
 		// };
+	}
+
+	// // execute?(this: IExecuteFunctions): Promise<NodeOutput>;
+	// async execute(this: IExecuteFunctions): Promise<any> {
+	// 	const items = this.getInputData();
+	// 	const returnData = [];
+	//
+	// 	const credentials = await this.getCredentials('yandexGptApi');
+	//
+	// 	for (let i = 0; i < items.length; i++) {
+	// 		const inputText = this.getNodeParameter('inputText', i) as string;
+	// 		const modelName = this.getNodeParameter('modelName', i) as string;
+	// 		const temperature = this.getNodeParameter('temperature', i) as number;
+	// 		const maxTokens = this.getNodeParameter('maxTokens', i) as number;
+	//
+	// 		// apiKey?: string;
+	// 		// iamToken?: string;
+	// 		// temperature: number;
+	// 		// maxTokens: number;
+	// 		// model: string;
+	// 		// modelVersion: string;
+	// 		// modelURI?: string;
+	// 		// folderID?: string;
+	//
+	// 		const model = new ChatYandexGPT({
+	// 			folderID: credentials.folderId as string,
+	// 			iamToken: credentials.iamToken as string,
+	// 			model: modelName,
+	// 			temperature,
+	// 			maxTokens,
+	// 		});
+	//
+	// 		try {
+	// 			const response = await model.invoke(inputText);
+	// 			returnData.push({ json: { response } });
+	// 		} catch (error) {
+	// 			if (this.continueOnFail()) {
+	// 				returnData.push({ json: { error: error.message } });
+	// 				continue;
+	// 			}
+	// 			throw error;
+	// 		}
+	// 	}
+	//
+	// 	return this.prepareOutputData(returnData);
+	// }
+
+	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+		const items = this.getInputData();
+		const returnData: INodeExecutionData[] = [];
+
+		const credentials = await this.getCredentials('yandexGptApi');
+
+		for (let i = 0; i < items.length; i++) {
+			try {
+				const inputText = this.getNodeParameter('inputText', i) as string;
+				const modelName = this.getNodeParameter('model', i) as string;
+				const temperature = this.getNodeParameter('temperature', i) as number;
+				const maxTokens = this.getNodeParameter('maxTokens', i) as number;
+
+				const model = new ChatYandexGPT({
+					folderID: credentials.folderId as string,
+					iamToken: credentials.iamToken as string,
+					model: modelName,
+					temperature,
+					maxTokens,
+				});
+
+				const response = await model.invoke(inputText);
+
+				returnData.push({
+					json: {
+						result: response,
+						input: inputText,
+						model: modelName,
+						timestamp: new Date().toISOString(),
+					},
+				});
+			} catch (error) {
+				if (this.continueOnFail()) {
+					returnData.push({
+						json: {
+							error: error.message,
+							input: this.getNodeParameter('inputText', i) as string,
+							timestamp: new Date().toISOString(),
+						},
+					});
+					continue;
+				}
+				throw error;
+			}
+		}
+
+		return this.prepareOutputData(returnData);
 	}
 }
