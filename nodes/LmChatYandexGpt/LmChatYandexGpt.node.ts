@@ -169,12 +169,20 @@ export class LmChatYandexGpt implements INodeType {
 	};
 
 	async supplyData(this: ISupplyDataFunctions, itemIndex: number): Promise<SupplyData> {
+		console.log('start');
+
 		// const credentials = await this.getCredentials<OpenAICompatibleCredential>('deepSeekApi');
 		const credentials = await this.getCredentials('yandexGptApi');
+
+		console.log('credentials');
+		console.log(credentials);
 
 		const modelName = this.getNodeParameter('model', itemIndex, '', {
 			extractValue: true,
 		}) as string;
+
+		console.log('modelName');
+		console.log(modelName);
 
 		var modelUri: string;
 
@@ -201,11 +209,17 @@ export class LmChatYandexGpt implements INodeType {
 			temperature?: number;
 		} as YandexGPTInputs;
 
+		console.log('options');
+		console.log(options);
+
 		const model = new ChatYandexGPT({
 			apiKey: credentials.apiKey as string,
 			modelURI: modelUri,
 			...options,
 		});
+
+		console.log('model');
+		console.log(model);
 
 		// iamToken?: string;
 		// model: string;
