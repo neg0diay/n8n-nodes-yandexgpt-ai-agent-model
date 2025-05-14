@@ -42,13 +42,13 @@ export class LmYandexGpt implements INodeType {
 			},
 		},
 		// eslint-disable-next-line n8n-nodes-base/node-class-description-inputs-wrong-regular-node
-		// inputs: [NodeConnectionType.Main],
-		inputs: [],
+		inputs: [NodeConnectionType.Main],
+		// inputs: [],
 		// eslint-disable-next-line n8n-nodes-base/node-class-description-outputs-wrong
 		// outputs: [NodeConnectionType.AiLanguageModel],
-		// outputs: [NodeConnectionType.AiChain],
-		outputs: [NodeConnectionType.Main],
-		// outputs: "['main']",
+		outputs: [NodeConnectionType.AiChain],
+		// outputs: [NodeConnectionType.Main],
+		// outputs: ["main"],
 		outputNames: ['Model'],
 		credentials: [
 			{
@@ -192,18 +192,22 @@ export class LmYandexGpt implements INodeType {
 
 		// form deepseek
 
-		const wrappedModel = {
-			invoke: async (input: any) => {
-				return model.invoke(input);
-			},
-			// Для поддержки стриминга
-			stream: model.stream ? async (input: any) => model.stream(input) : undefined,
-		};
-
-		return {
-			response: wrappedModel,
-		};
+		// const wrappedModel = {
+		// 	invoke: async (input: any) => {
+		// 		return model.invoke(input);
+		// 	},
+		// 	// Для поддержки стриминга
+		// 	stream: model.stream ? async (input: any) => model.stream(input) : undefined,
+		// };
+		//
+		// return {
+		// 	response: wrappedModel,
+		// };
 
 		// form deepseek
+
+		return {
+			response: model,
+		};
 	}
 }
