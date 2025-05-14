@@ -45,7 +45,8 @@ export class LmYandexGpt implements INodeType {
 		inputs: [NodeConnectionType.Main],
 		// eslint-disable-next-line n8n-nodes-base/node-class-description-outputs-wrong
 		// outputs: [NodeConnectionType.AiLanguageModel],
-		outputs: [NodeConnectionType.AiChain],
+		// outputs: [NodeConnectionType.AiChain],
+		outputs: [NodeConnectionType.Main],
 		outputNames: ['Model'],
 		credentials: [
 			{
